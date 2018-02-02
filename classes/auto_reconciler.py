@@ -12,8 +12,9 @@ class AutoReconciler(object):
     :good_ids_list: (list) List of respondent IDs (RIDS) that are supposed to remain in the final sample
     """
 
-    list_surveys_url = "https://api.samplicio.us/Demand/v1/Surveys/BySurveyStatus"
-    reconcile_survey_url = "https://api.samplicio.us/Demand/v1/Surveys/Reconcile"
+    base_url = "https://sandbox.techops.engineering/"
+    list_surveys_url = "{}Demand/v1/Surveys/BySurveyStatus".format(base_url)
+    reconcile_survey_url = "{}Demand/v1/Surveys/Reconcile".format(base_url)
     good_ids_list = None
 
     def __init__(self, api_key: str):

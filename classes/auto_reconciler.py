@@ -1,6 +1,9 @@
 import requests
 from .fulcrum_variables import FulcrumVariables
 import json
+import os
+import pandas as pd
+import datetime
 
 
 class AutoReconciler(object):
@@ -16,6 +19,8 @@ class AutoReconciler(object):
     list_surveys_url = "{}Demand/v1/Surveys/BySurveyStatus".format(base_url)
     reconcile_survey_url = "{}Demand/v1/Surveys/Reconcile".format(base_url)
     good_ids_list = None
+    data_check_path = "S:/Python/Data Check"
+    completed_surveys = None
 
     def __init__(self, api_key: str):
         """
@@ -23,8 +28,6 @@ class AutoReconciler(object):
         :param api_key:
         """
         self.api_key = api_key
-        self.completed_surveys = self.list_completed_surveys()
-        self.good_ids_list = self.configure_good_ids_list()
 
     def list_completed_surveys(self):
         """
@@ -34,11 +37,14 @@ class AutoReconciler(object):
         """
 
         request_header = {FulcrumVariables.authorization: self.api_key}
-        response = requests.get("{}/{}".format(self.list_surveys_url, FulcrumVariables.complete_name),
+        response = requests.get("{}/{}".format(self.list_surveys_url, FulcrumVariables.completed_survey_code),
                                 headers=request_header)
-        response_data = json.loads(response.json())
-
-        return response_data.get(FulcrumVariables.survey_list_name)
+        response_data = response.json()
+        all_surveys = response_data.get(FulcrumVariables.survey_list_name)
+        self.completed_surveys = [survey for survey in all_surveys if survey.get(
+            'SurveyStatusCode') == FulcrumVariables.completed_survey_code]
+        if len(self.completed_surveys) == 0:
+            print('No completed surveys')
 
     def reconcile_survey(self, survey_number):
         """
@@ -70,12 +76,27 @@ class AutoReconciler(object):
         response = requests.post(request_url, data=request_data, headers=request_headers)
 
         if response.status_code != 202:
+            print(response.status_code)
             raise Exception
 
     def configure_good_ids_list(self):
-        thing = self.api_key
 
-        return []
+        date_list = os.listdir(self.data_check_path)
+        today = datetime.datetime.today()
+        date_str = "{}-{}".format(today.year, str(today.month).zfill(2))
+        date_series = pd.Series(date_list)
+        this_month_series = date_series[date_series.str.contains(date_str)]
+        ids = []
+        for i in this_month_series.tolist():
+            try:
+                data_check = pd.read_excel("{}/{}".format(self.data_check_path, i))
+                good_data = data_check[data_check.loc[:, 'BadData'] != 1]
+                fulcrum_data = good_data[good_data.loc[:, 'VENDOR'] == 'FU']
+                ids += (fulcrum_data.loc[:, 'ID'].tolist())
+            except PermissionError:
+                print("{} open somewhere".format(i))
+
+        return ids
 
     def reconcile_completed_surveys(self):
         for survey in self.completed_surveys:

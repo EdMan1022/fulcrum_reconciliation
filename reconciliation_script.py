@@ -1,4 +1,4 @@
-from .classes import AutoReconciler
+from classes import AutoReconciler
 import os
 import dotenv
 
@@ -10,6 +10,8 @@ dotenv.load_dotenv(env_path)
 API_KEY = os.environ.get('FULCRUM_SANDBOX_API_KEY')
 
 auto_reconciler = AutoReconciler(API_KEY)
+auto_reconciler.list_completed_surveys()
+auto_reconciler.good_ids_list = auto_reconciler.configure_good_ids_list()
 
 auto_reconciler.reconcile_completed_surveys()
 

@@ -147,10 +147,11 @@ class AutoReconciler(object):
 
         first_of_month = today.replace(day=1)
         last_month = first_of_month - datetime.timedelta(days=2)
-
         previous_month_path = "{}/{} good data.csv".format(self.previous_month_path,
                                                            datetime.datetime.strftime(last_month, '%B'))
-
+        if not os.path.isfile(previous_month_path):
+            self.configure_month_good_ids_file(last_month.month, last_month.year,
+                                               datetime.datetime.strftime(last_month, '%B'))
         ids = pd.read_csv(previous_month_path, header=None).iloc[:, 1].tolist()
         for i in this_month_series.tolist():
             try:

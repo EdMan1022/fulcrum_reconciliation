@@ -128,7 +128,7 @@ class AutoReconciler(object):
                 fulcrum_data = good_data[good_data.loc[:, 'VENDOR'] == 'FU']
                 ids += (fulcrum_data.loc[:, 'ID'].tolist())
             except PermissionError:
-                print("{} open somewhere".format(i))
+                raise exc.OpenDataFileError(i)
 
         return ids
 

@@ -20,3 +20,8 @@ class InvalidAppTypeError(CustomError):
     def __init__(self, type_string):
         Exception.__init__(self, "App initialized with an invalid type string: "
                                  "{}\nString needs to be 'production' or 'sandbox'".format(type_string))
+
+
+class OpenDataFileError(CustomError):
+    def __init__(self, file):
+        Exception.__init__(self, "A data check file from the current month is open".format(file))

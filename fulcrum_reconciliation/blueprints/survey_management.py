@@ -38,7 +38,7 @@ def update_all_surveys_view():
                 db.session.flush()
         db.session.commit()
 
-    return 'Complete'
+    return 'Update Complete'
 
 
 @survey_management_bp.route('/survey_management/reconcile_surveys')
@@ -57,4 +57,4 @@ def reconcile_surveys_view():
 
     api_helper.reconcile_completed_surveys()
 
-    return 'Complete'
+    return 'Reconciliation Complete'

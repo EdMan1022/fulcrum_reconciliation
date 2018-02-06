@@ -16,19 +16,29 @@ class AutoReconciler(object):
     :good_ids_list: (list) List of respondent IDs (RIDS) that are supposed to remain in the final sample
     """
 
-    base_url = "https://sandbox.techops.engineering/"
+    production_url = "https://api.samplicio.us/ "
+    sandbox_url = "https://sandbox.techops.engineering/"
+
+    base_url = None
     list_surveys_url = "{}Demand/v1/Surveys/BySurveyStatus".format(base_url)
     reconcile_survey_url = "{}Demand/v1/Surveys/Reconcile".format(base_url)
     good_ids_list = None
     data_check_path = "S:/Python/Data Check"
     completed_surveys = None
 
-    def __init__(self, api_key: str):
+    def __init__(self, api_key: str, app_type: str):
         """
 
         :param api_key:
         """
         self.api_key = api_key
+
+        if app_type.lower() == "production":
+            self.base_url = self.production_url
+        elif app_type.lower() == 'sandbox':
+            self.sandbox_url = self.sandbox_url
+        else:
+            raise exc.InvalidAppTypeError(app_type)
 
     def list_completed_surveys(self):
         """

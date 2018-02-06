@@ -14,3 +14,9 @@ class NoGoodIDsError(CustomError):
 class ReconciliationResponseError(CustomError):
     def __init__(self, response_code):
         Exception.__init__(self, "Reconciliation route returned an invalid code: {}".format(response_code))
+
+
+class InvalidAppTypeError(CustomError):
+    def __init__(self, type_string):
+        Exception.__init__(self, "App initialized with an invalid type string: "
+                                 "{}\nString needs to be 'production' or 'sandbox'".format(type_string))

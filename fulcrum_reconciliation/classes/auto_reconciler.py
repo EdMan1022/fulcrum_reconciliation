@@ -4,7 +4,7 @@ import json
 import os
 import pandas as pd
 import datetime
-import fulcrum_app.exceptions as exc
+import fulcrum_reconciliation.exceptions as exc
 
 
 class AutoReconciler(object):
@@ -16,7 +16,7 @@ class AutoReconciler(object):
     :good_ids_list: (list) List of respondent IDs (RIDS) that are supposed to remain in the final sample
     """
 
-    production_url = "https://api.samplicio.us/ "
+    production_url = "https://api.samplicio.us/"
     sandbox_url = "https://sandbox.techops.engineering/"
 
     base_url = None
@@ -26,19 +26,27 @@ class AutoReconciler(object):
     data_check_path = "S:/Python/Data Check"
     completed_surveys = None
 
-    def __init__(self, api_key: str, app_type: str):
+    def __init__(self, api_key: str, base_url: str):
         """
 
         :param api_key:
         """
         self.api_key = api_key
+        self.base_url = base_url
 
-        if app_type.lower() == "production":
-            self.base_url = self.production_url
-        elif app_type.lower() == 'sandbox':
-            self.sandbox_url = self.sandbox_url
-        else:
-            raise exc.InvalidAppTypeError(app_type)
+    def list_surveys_by_status(self, survey_status):
+        """
+        Queries Fulcrum API for the list of completed surveys
+
+        :return:
+        """
+
+        request_header = {FulcrumVariables.authorization: self.api_key}
+        response = requests.get("{}/{}".format(self.list_surveys_url, survey_status),
+                                headers=request_header)
+        response_data = response.json()
+        all_surveys = response_data.get(FulcrumVariables.survey_list_name)
+        return all_surveys
 
     def list_completed_surveys(self):
         """
@@ -52,8 +60,7 @@ class AutoReconciler(object):
                                 headers=request_header)
         response_data = response.json()
         all_surveys = response_data.get(FulcrumVariables.survey_list_name)
-        self.completed_surveys = [survey for survey in all_surveys if survey.get(
-            'SurveyStatusCode') == FulcrumVariables.completed_survey_code]
+        self.completed_surveys = all_surveys
         if len(self.completed_surveys) == 0:
             raise exc.NoCompleteSurveysError
 

@@ -8,3 +8,4 @@ class ProductionConfig(BaseConfig):
     """
 
     API_KEY = os.environ.get('FULCRUM_PRODUCTION_API_KEY')
+    BASE_URL = "https://api.samplicio.us/"

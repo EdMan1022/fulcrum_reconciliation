@@ -14,5 +14,11 @@ class FulcrumVariables(object):
     authorization = "Authorization"
     complete_name = "Completed"
     survey_list_name = "Surveys"
+    survey_status_key = 'SurveyStatusCode'
     response_ids = "ResponseIDs"
+    survey_number = 'SurveyNumber'
     reconciliation_response_code = [202]
+    survey_name = "SurveyName"
+
+    all_survey_status_codes = ['01', '02', '03', '04', '05', '06']
+

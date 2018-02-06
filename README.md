@@ -1,2 +1,2 @@
 # fulcrum_reconciliation
-Simple script that compiles all of the good data Fulcrum IDs for a month, and sends requests to the reconcilliation endpoint of the API.
+Simple flask app that tracks the reconciliation process on Fulcrum. Reconciliation allows users to update status of responses to invalid on Fulcrum's website, so that bad data isn't paid for.

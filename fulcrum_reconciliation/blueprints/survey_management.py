@@ -15,7 +15,7 @@ def update_all_surveys_view():
     """
 
     config = db.app.config
-    api_helper = AutoReconciler(api_key=config.API_KEY, base_url=config.BASE_URL)
+    api_helper = AutoReconciler(api_key=config.get('API_KEY'), base_url=config.get('BASE_URL'))
 
     for survey_status_code in FulcrumVariables.all_survey_status_codes:
         survey_list = api_helper.list_surveys_by_status(survey_status=survey_status_code)
@@ -39,3 +39,11 @@ def update_all_surveys_view():
         db.session.commit()
 
     return 'Complete'
+
+
+@survey_management_bp.route('/survey_management/reconcile_surveys')
+def reconcile_surveys_view():
+    """
+    Performs reconciliation function for surveys that are complete but not
+    :return:
+    """

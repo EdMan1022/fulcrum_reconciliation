@@ -20,8 +20,8 @@ class AutoReconciler(object):
     sandbox_url = "https://sandbox.techops.engineering/"
 
     base_url = None
-    list_surveys_url = "{}Demand/v1/Surveys/BySurveyStatus".format(base_url)
-    reconcile_survey_url = "{}Demand/v1/Surveys/Reconcile".format(base_url)
+    list_surveys_url = None
+    reconcile_survey_url = None
     good_ids_list = None
     data_check_path = "S:/Python/Data Check"
     completed_surveys = None
@@ -33,6 +33,8 @@ class AutoReconciler(object):
         """
         self.api_key = api_key
         self.base_url = base_url
+        self.list_surveys_url = "{}Demand/v1/Surveys/BySurveyStatus".format(self.base_url)
+        self.reconcile_survey_url = "{}Demand/v1/Surveys/Reconcile".format(self.base_url)
 
     def list_surveys_by_status(self, survey_status):
         """

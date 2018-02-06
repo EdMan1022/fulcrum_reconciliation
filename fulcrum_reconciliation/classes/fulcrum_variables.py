@@ -20,5 +20,5 @@ class FulcrumVariables(object):
     reconciliation_response_code = [202]
     survey_name = "SurveyName"
 
-    all_survey_status_codes = ['01', '02', '03', '04', '05', '06']
+    all_survey_status_codes = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13']
 

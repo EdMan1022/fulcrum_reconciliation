@@ -52,5 +52,9 @@ def reconcile_surveys_view():
     config = db.app.config
     api_helper = AutoReconciler(api_key=config.get('API_KEY'), base_url=config.get('BASE_URL'))
 
+    api_helper.configure_good_ids_list()
+    api_helper.configure_reconciliation_list()
 
+    api_helper.reconcile_completed_surveys()
 
+    return 'Complete'

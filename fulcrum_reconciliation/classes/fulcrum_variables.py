@@ -11,6 +11,8 @@ class FulcrumVariables(object):
     """
 
     completed_survey_code = '04'
+    reconciled_survey_code = '08'
+
     authorization = "Authorization"
     complete_name = "Completed"
     survey_list_name = "Surveys"

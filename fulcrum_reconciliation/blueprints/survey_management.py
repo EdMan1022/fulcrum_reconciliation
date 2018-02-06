@@ -2,6 +2,7 @@ import flask
 from fulcrum_reconciliation.classes import FulcrumVariables, AutoReconciler, DbVariables
 from fulcrum_reconciliation.extensions import db
 from fulcrum_reconciliation import models
+import datetime
 
 survey_management_bp = flask.Blueprint('survey_management_bp', __name__)
 
@@ -39,6 +40,21 @@ def update_all_surveys_view():
         db.session.commit()
 
     return 'Update Complete'
+
+
+@survey_management_bp.route('/survey_management/configure_previous_month_ids')
+def configure_previous_month_ids_view():
+
+    config = db.app.config
+    api_helper = AutoReconciler(api_key=config.get('API_KEY'), base_url=config.get('BASE_URL'))
+
+    today = datetime.datetime.today()
+    first_of_month = today.replace(day=1)
+    last_month = first_of_month - datetime.timedelta(days=2)
+
+    api_helper.configure_month_good_ids_file(month=last_month.month, year=last_month.year,
+                                             month_str=datetime.datetime.strftime(last_month, '%B'))
+    return 'Previous Month IDs Created'
 
 
 @survey_management_bp.route('/survey_management/reconcile_surveys')

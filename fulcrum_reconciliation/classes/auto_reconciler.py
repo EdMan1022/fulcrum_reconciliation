@@ -105,7 +105,38 @@ class AutoReconciler(object):
         survey.reconciliation_status_code = DbVariables.reconciled_code
         db.session.commit()
 
+    def configure_month_good_ids_file(self, month, year, month_str):
+        """
+        Creates a list of good Fulcrum IDs from all of the data checks for a given month and year
+
+        :param month: Integer value of the month to be compiled
+        :param year: Integer value of the year
+        :param month_str: Text value of month for file name
+        :return:
+        """
+
+        date_list = os.listdir(self.data_check_path)
+        this_month_date_str = "{}-{}".format(year, str(month).zfill(2))
+        date_series = pd.Series(date_list)
+        this_month_series = date_series[date_series.str.contains(this_month_date_str)]
+        ids = []
+        for i in this_month_series.tolist():
+            try:
+                data_check = pd.read_excel("{}/{}".format(self.data_check_path, i))
+                good_data = data_check[data_check.loc[:, 'BadData'] != 1]
+                fulcrum_data = good_data[good_data.loc[:, 'VENDOR'] == 'FU']
+                ids += (fulcrum_data.loc[:, 'ID'].tolist())
+            except PermissionError:
+                raise exc.OpenDataFileError(i)
+        pd.Series(ids).to_csv("{}/{} good data.csv".format(self.previous_month_path, month_str))
+
     def configure_good_ids_list(self):
+        """
+        Sets the good_ids_list attribute equal to the list of ids from this month and the previous month
+
+        These ids will be sent to the reconciliation endpoint on the Fulcrum API
+        :return:
+        """
 
         date_list = os.listdir(self.data_check_path)
         today = datetime.datetime.today()
@@ -129,8 +160,7 @@ class AutoReconciler(object):
                 ids += (fulcrum_data.loc[:, 'ID'].tolist())
             except PermissionError:
                 raise exc.OpenDataFileError(i)
-
-        return ids
+        self.good_ids_list = ids
 
     def reconcile_completed_surveys(self):
         for survey in self.completed_surveys:

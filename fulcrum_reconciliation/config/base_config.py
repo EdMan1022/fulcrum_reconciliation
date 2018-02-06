@@ -14,3 +14,4 @@ class BaseConfig(object):
     SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_PRODUCTION_DATABASE_URI')
     DEBUG = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    APP_NAME = 'fulcrum_reconciliation'

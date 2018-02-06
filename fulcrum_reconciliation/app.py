@@ -4,7 +4,7 @@ from .config.base_config import BaseConfig
 import fulcrum_reconciliation.exceptions as exc
 
 
-def create_app(config: BaseConfig):
+def create_app(config):
 
     if config is None:
         raise exc.NoAppConfigError
@@ -13,6 +13,7 @@ def create_app(config: BaseConfig):
     app.config.from_object(config)
 
     db.init_app(app)
+    db.app = app
 
     return app
 

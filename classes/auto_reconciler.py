@@ -4,6 +4,7 @@ import json
 import os
 import pandas as pd
 import datetime
+import exceptions as exc
 
 
 class AutoReconciler(object):
@@ -44,7 +45,7 @@ class AutoReconciler(object):
         self.completed_surveys = [survey for survey in all_surveys if survey.get(
             'SurveyStatusCode') == FulcrumVariables.completed_survey_code]
         if len(self.completed_surveys) == 0:
-            print('No completed surveys')
+            raise exc.NoCompleteSurveysError
 
     def reconcile_survey(self, survey_number):
         """
@@ -56,7 +57,7 @@ class AutoReconciler(object):
 
         # Check that the ids list has been set
         if self.good_ids_list is None:
-            raise Exception
+            raise exc.NoGoodIDsError
 
         # Create data from ids
         request_params = {FulcrumVariables.response_ids: self.good_ids_list}
@@ -75,9 +76,9 @@ class AutoReconciler(object):
         # send reconciliation POST
         response = requests.post(request_url, data=request_data, headers=request_headers)
 
-        if response.status_code != 202:
-            print(response.status_code)
-            raise Exception
+        # Raise an exception if the response status code is not valid
+        if response.status_code not in FulcrumVariables.reconciliation_response_code:
+            raise exc.ReconciliationResponseError(response.status_code)
 
     def configure_good_ids_list(self):
 

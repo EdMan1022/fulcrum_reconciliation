@@ -44,6 +44,13 @@ def update_all_surveys_view():
 @survey_management_bp.route('/survey_management/reconcile_surveys')
 def reconcile_surveys_view():
     """
-    Performs reconciliation function for surveys that are complete but not
+    Performs reconciliation function for surveys that are complete but not yet reconciled
+
     :return:
     """
+
+    config = db.app.config
+    api_helper = AutoReconciler(api_key=config.get('API_KEY'), base_url=config.get('BASE_URL'))
+
+
+

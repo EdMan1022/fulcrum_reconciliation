@@ -1,10 +1,12 @@
 import requests
 from .fulcrum_variables import FulcrumVariables
+from .db_variables import DbVariables
 import json
 import os
 import pandas as pd
 import datetime
 import fulcrum_reconciliation.exceptions as exc
+from fulcrum_reconciliation import models
 
 
 class AutoReconciler(object):
@@ -50,21 +52,19 @@ class AutoReconciler(object):
         all_surveys = response_data.get(FulcrumVariables.survey_list_name)
         return all_surveys
 
-    def list_completed_surveys(self):
+    def configure_reconciliation_list(self):
         """
-        Queries Fulcrum API for the list of completed surveys
+        Sets the list of surveys to be reconciled based on the database
 
         :return:
         """
 
-        request_header = {FulcrumVariables.authorization: self.api_key}
-        response = requests.get("{}/{}".format(self.list_surveys_url, FulcrumVariables.completed_survey_code),
-                                headers=request_header)
-        response_data = response.json()
-        all_surveys = response_data.get(FulcrumVariables.survey_list_name)
-        self.completed_surveys = all_surveys
-        if len(self.completed_surveys) == 0:
+        # Get the list of surveys that have been completed but not reconciled
+        all_surveys = models.FulcrumSurvey.query.filter_by(survey_status_code=FulcrumVariables.completed_survey_code,
+                                                           reconciliation_code=DbVariables.not_reconciled_code).all()
+        if len(all_surveys) <= 0:
             raise exc.NoCompleteSurveysError
+        self.completed_surveys = all_surveys
 
     def reconcile_survey(self, survey_number):
         """
@@ -120,4 +120,4 @@ class AutoReconciler(object):
 
     def reconcile_completed_surveys(self):
         for survey in self.completed_surveys:
-            self.reconcile_survey(survey.get('survey_number'))
+            self.reconcile_survey(survey.survey_number)

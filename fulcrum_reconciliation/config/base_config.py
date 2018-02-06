@@ -2,7 +2,7 @@ import os
 import dotenv
 
 # Load in any environment variables
-env_path = os.path.join(os.getcwd(), '.env')
+env_path = os.path.join(os.path.dirname(__file__), '.env')
 dotenv.load_dotenv(env_path)
 
 

@@ -1,8 +1,7 @@
-from fulcrum_reconciliation.app import create_app
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager
 from fulcrum_reconciliation.config import ProductionConfig
-
+from fulcrum_reconciliation.create_app import create_app
 
 app = create_app(config=ProductionConfig)
 

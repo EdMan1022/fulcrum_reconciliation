@@ -4,7 +4,7 @@ import json
 import os
 import pandas as pd
 import datetime
-import exceptions as exc
+import fulcrum_app.exceptions as exc
 
 
 class AutoReconciler(object):

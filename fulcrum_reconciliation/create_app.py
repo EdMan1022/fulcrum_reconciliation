@@ -1,6 +1,5 @@
 from flask import Flask
-from .extensions import db
-from .config.base_config import BaseConfig
+from fulcrum_reconciliation.extensions import db
 import fulcrum_reconciliation.exceptions as exc
 
 

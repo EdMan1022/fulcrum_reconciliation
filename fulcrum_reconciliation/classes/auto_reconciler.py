@@ -178,5 +178,4 @@ class AutoReconciler(object):
         """
         for survey in self.completed_surveys:
             if self.callout_string in survey.name.lower():
-                # self.reconcile_survey(survey)
-                print(survey.name)
+                self.reconcile_survey(survey)

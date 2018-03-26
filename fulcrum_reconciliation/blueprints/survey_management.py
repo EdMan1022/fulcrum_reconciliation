@@ -62,6 +62,7 @@ def reconcile_surveys_view():
     """
     Performs reconciliation function for surveys that are complete but not yet reconciled
 
+    Only performs the process on callout surveys, since their ID pool is the only one being drawn from
     :return:
     """
 
@@ -71,6 +72,6 @@ def reconcile_surveys_view():
     api_helper.configure_good_ids_list()
     api_helper.configure_reconciliation_list()
 
-    api_helper.reconcile_completed_surveys()
+    api_helper.reconcile_completed_callout_surveys()
 
     return 'Reconciliation Complete'

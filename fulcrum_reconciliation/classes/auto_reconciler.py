@@ -30,6 +30,8 @@ class AutoReconciler(object):
     previous_month_path = "S:/Python/Good Data by Month"
     completed_surveys = None
 
+    callout_string = 'callout'
+
     def __init__(self, api_key: str, base_url: str):
         """
 
@@ -166,3 +168,15 @@ class AutoReconciler(object):
     def reconcile_completed_surveys(self):
         for survey in self.completed_surveys:
             self.reconcile_survey(survey)
+
+    def reconcile_completed_callout_surveys(self):
+        """
+        Performs the reconciliation process for all of the surveys that contain case insensitive 'callout' in their name
+
+        The good id list only draws from the callout data, so this needs to
+        :return:
+        """
+        for survey in self.completed_surveys:
+            if self.callout_string in survey.name.lower():
+                # self.reconcile_survey(survey)
+                print(survey.name)
